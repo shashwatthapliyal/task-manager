@@ -1,6 +1,7 @@
 const display = document.querySelector("div");
 const addBtn = document.getElementById("addTask");
 const removeBtn = document.getElementById("removeTask");
+const state = document.getElementById("state");
 
 function createBtn() {
     const newBtn = document.createElement("button");
@@ -21,11 +22,20 @@ function createTaskAndDeleteBtnContainer() {
     return container;
 }
 
+// Promise Implementation
 function getNewTask() {
-    const task = prompt("Enter new task");
-    if (!task) return;
+    let pr = new Promise((resolve, reject) => {
+        const task = prompt("Enter new task");
+        if (!task) reject("Name cant be empty fooooooooool")
+        resolve(task);
+    })
+    return pr;
+}
 
+function addTaskToContainer(task) {
     const deleteBtn = createBtn();
+    deleteBtn.classList.add("remove-task");
+
     const newTask = createNewTask();
     const container = createTaskAndDeleteBtnContainer();
 
@@ -36,5 +46,12 @@ function getNewTask() {
     display.appendChild(container);
 }
 
-addBtn.addEventListener("click", getNewTask);
-removeBtn.addEventListener("click",deleteTask);
+addBtn.addEventListener("click", () => {
+    state.textContent = "loading.....";
+
+    let pr = getNewTask();
+    pr.then(task => addTaskToContainer(task)
+    .catch(console.log("Error"))
+    )
+});
+removeBtn.addEventListener("click", deleteTask);
